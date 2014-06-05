@@ -187,18 +187,12 @@ func (t TransifexAPI) DownloadTranslations(slug string) (map[string]string, erro
 
 	translations := make(map[string]string, len(langs))
 	for _, lang := range langs {
-		resp, err2 := t.execRequest("GET", fmt.Sprintf("%s/project/%s/resource/%s/translation/%s", t.ApiUrl, t.Project, slug, lang), nil)
+		data, err2 := t.getJson(fmt.Sprintf("%s/project/%s/resource/%s/translation/%s", t.ApiUrl, t.Project, slug, lang))
 		if err2 != nil {
 			return nil, err2
 		}
-		defer resp.Body.Close()
 
-		data, readErr := ioutil.ReadAll(resp.Body)
-		if readErr != nil {
-			return nil, readErr
-		}
-
-		translations[lang] = string(data)
+		translations[lang] = data.(map[string]interface{})["content"].(string)
 	}
 	return translations, nil
 }
