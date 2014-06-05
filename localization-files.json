@@ -1,0 +1,10 @@
+{
+	"KEYVALUEJSON":[{
+		"dir" : "web-ui/src/main/resources/catalog/locales/",
+		"filename" : "core",
+		"name" : "Angular UI Common Strings",
+		"slug" : "core",
+		"priority" : "0",
+		"categories" : ["Angular_UI"]
+	}]
+}
