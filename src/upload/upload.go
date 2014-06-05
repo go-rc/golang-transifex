@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -16,7 +15,6 @@ var sourceLang string
 var rootDir string
 var transifexApi transifex.TransifexAPI
 var existingResources = make(map[string]bool)
-var uploadTranslations = flag.Bool("translations", false, "If true the translations will also be uploaded.  WARNING all changes on transifex for the uploaded languages will be lost");
 
 func main() {
 	transifexCLI := cli.NewCLI()
@@ -49,17 +47,14 @@ func main() {
 	}
 
 	for done := 0; done < len(files); {
-		<-doneChannel
-
+		slug := <-doneChannel
+		fmt.Printf("\nFINISHED %s\n", slug)
 		done++
 	}
 }
 
 func upload(doneChannel chan string, file config.LocalizationFile) {
 	uploadFile(file)
-	if ! *uploadTranslations {
-		addTranslations(file)
-	}
 	doneChannel <- file.Slug
 }
 
@@ -112,6 +107,8 @@ func uploadFile(file config.LocalizationFile) {
 		if err != nil {
 			log.Fatalf("Error encountered sending the request to transifex: \n%s'n", err)
 		}
+
+		addTranslations(file)
 
 		fmt.Printf("Finished Adding '%s'\n", slug)
 	} else {
