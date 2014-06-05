@@ -15,7 +15,7 @@ func main() {
 	transifexApi := transifex.NewTransifexAPI(transifexCLI.ProjectSlug(), transifexCLI.Username(), transifexCLI.Password())
 	rootDir := transifexCLI.RootDir()
 
-	//transifexApi.Debug = true
+	transifexApi.Debug = transifexCLI.Debug()
 
 	var err error
 	if err = transifexApi.ValidateConfiguration(); err != nil {

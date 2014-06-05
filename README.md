@@ -6,7 +6,7 @@ Simple library and command line tools for uploading and downloading translation 
 Upload
 ------
 
-Upload all the 'source language' (default english) files defined in the configuration file.
+Upload all the 'source language' (defined in transifex) files defined in the configuration file.
 Optionally also upload translations.
 
 Transifex has the concept of "resources".  Each resource represents a set of translation files for all languages.  There is a source language which contains all strings that need to be translated.  This file is not editable.  There are also any number of "translations" for a "resource".  Each translation are all strings in a particular language that have been translated.

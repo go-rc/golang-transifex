@@ -12,6 +12,7 @@ import (
 
 type CLI struct {
 	projectSlug, configFile, username, password *string
+	debug *bool
 	rootDir                                     string
 }
 
@@ -20,7 +21,9 @@ func NewCLI() CLI {
 		projectSlug: flag.String("project", "", "REQUIRED - the transifex project slug"),
 		configFile:  flag.String("config", "", "REQUIRED - The location of the configuration file"),
 		username:    flag.String("username", "", "The transifex username"),
-		password:    flag.String("password", "", "The transifex password")}
+		password:    flag.String("password", "", "The transifex password"),
+		debug:	flag.Bool("v", false, "if true then debug information will be printed")}
+		
 	flag.Parse()
 	if *cli.configFile == "" {
 		fmt.Printf("The 'config' flag is required.  \n\n")
@@ -51,6 +54,10 @@ func (cli CLI) ProjectSlug() string {
 
 func (cli CLI) ConfigFile() string {
 	return *cli.configFile
+}
+
+func (cli CLI) Debug() bool {
+	return *cli.debug
 }
 
 func (cli CLI) Username() string {

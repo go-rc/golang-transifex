@@ -1,6 +1,7 @@
 package transifex
 
 import (
+	"strings"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -148,15 +149,28 @@ Strings deleted: %v
 }
 
 func (t TransifexAPI) SourceLanguage() (string, error) {
-	jsonData, err := t.getJson(t.ApiUrl + "/project/" + t.Project)
+	if t.Debug {
+		fmt.Println("Executing transifex.SourceLanguage")
+	}
+
+	jsonData, err := t.getJson(t.ApiUrl + "/project/" + t.Project, "Error loading SourceLanguage")
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	lang, has := jsonData.(map[string]interface{})["source_language_code"]
 	if !has {
 		return "", fmt.Errorf("An error occurred while reading response. Expected a 'source_language_code' json field:\n%s", jsonData)
 	}
-	return lang.(string), nil
+	sourceLang := lang.(string)
+	if strings.TrimSpace(sourceLang) == "" {
+		return "", fmt.Errorf("No source language found.  This is probably a bug")
+	}
+
+	if t.Debug {
+		fmt.Printf("Source language read: %s\n", sourceLang)
+	}
+
+	return sourceLang, nil
 }
 func (t TransifexAPI) Languages() ([]Language, error) {
 	resp, err := t.execRequest("GET", fmt.Sprintf("%s/project/%s/languages", t.ApiUrl, t.Project), nil)
@@ -194,7 +208,8 @@ func (t TransifexAPI) DownloadTranslations(slug string) (map[string]string, erro
 
 	translations := make(map[string]string, len(langs))
 	for _, lang := range langs {
-		data, err2 := t.getJson(fmt.Sprintf("%s/project/%s/resource/%s/translation/%s", t.ApiUrl, t.Project, slug, lang))
+		url := fmt.Sprintf("%s/project/%s/resource/%s/translation/%s", t.ApiUrl, t.Project, slug, lang)
+		data, err2 := t.getJson(url, "Error downloing translations file")
 		if err2 != nil {
 			return nil, err2
 		}
@@ -204,13 +219,13 @@ func (t TransifexAPI) DownloadTranslations(slug string) (map[string]string, erro
 	return translations, nil
 }
 
-func (t TransifexAPI) getJson(url string) (interface{}, error) {
+func (t TransifexAPI) getJson(url string, errMsg string) (interface{}, error) {
 	resp, err := t.execRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	jsonData, checkErr := t.checkValidJsonResponse(resp, "Error while reading project description")
+	jsonData, checkErr := t.checkValidJsonResponse(resp, errMsg)
 	if checkErr != nil {
 		return nil, checkErr
 	}
@@ -228,14 +243,24 @@ func (t TransifexAPI) execRequest(method string, url string, requestData io.Read
 	}
 
 	if t.Debug {
-		func() {
-			var dump, _ = httputil.DumpRequest(request, true)
-			fmt.Println(string(dump))
-		}()
+		fmt.Printf("\nExecuting http %s request: '%s'\n\n", method, url)
+		dump, _ := httputil.DumpRequest(request, true)
+		fmt.Println(string(dump))
 	}
 
-	fmt.Printf("\nExecuting http %s request: '%s'\n\n", method, url)
-	return t.client.Do(request)
+	resp, finalErr := t.client.Do(request)
+
+	if t.Debug {
+		dump, _ := httputil.DumpResponse(resp, true)
+		fmt.Println(string(dump))
+
+	}
+
+	if resp.StatusCode > 400 {
+		return nil, fmt.Errorf("Response Code: %v\nResponse Status: %s", resp.StatusCode, resp.Status)
+	}
+
+	return resp, finalErr
 }
 
 func (t TransifexAPI) resourcesUrl(endSlash bool) string {

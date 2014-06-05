@@ -20,21 +20,19 @@ func main() {
 	transifexCLI := cli.NewCLI()
 	transifexApi = transifex.NewTransifexAPI(transifexCLI.ProjectSlug(), transifexCLI.Username(), transifexCLI.Password())
 	rootDir = transifexCLI.RootDir()
-	// transifexApi.Debug = true
+	transifexApi.Debug = transifexCLI.Debug()
 	var err error
-	if err = transifexApi.ValidateConfiguration(); err != nil {
-		log.Fatalf(err.Error())
-	}
 
 	if sourceLang, err = transifexApi.SourceLanguage(); err != nil {
-		log.Fatalf("Error loading the transifext project data.")
+		log.Fatalf("\n\nError loading the transifext project data: \n%s", err)
 	}
+
 
 	files, readFilesErr := config.ReadConfig(transifexCLI.ConfigFile(), rootDir, sourceLang, transifexApi)
 
 	if readFilesErr != nil {
 		fmt.Println(rootDir)
-		log.Fatalf("Error reading reading language files: \n\n%s", readFilesErr)
+		log.Fatalf("\n\nError reading reading language files: \n\n%s", readFilesErr)
 	}
 
 	readExistingResources()
@@ -67,7 +65,7 @@ func readBody(resp http.Response) []byte {
 }
 
 func loadContent(lang string, file config.LocalizationFile) string {
-	filename := file.Translations[sourceLang]
+	filename := file.Translations[lang]
 	content, fileErr := ioutil.ReadFile(rootDir + filename)
 	if fileErr != nil {
 		log.Fatalf("Unable to load file: %s", fileErr)
