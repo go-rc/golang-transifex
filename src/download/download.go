@@ -1,10 +1,10 @@
 package main
 
 import (
-	"path/filepath"
-	"log"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"path/filepath"
 	"transifex"
 	"transifex/cli"
 	"transifex/config"
@@ -51,7 +51,7 @@ func main() {
 	}
 }
 
-func readExistingResources(transifexApi transifex.TransifexAPI) (map[string]bool) {
+func readExistingResources(transifexApi transifex.TransifexAPI) map[string]bool {
 	resources, err := transifexApi.ListResources()
 	if err != nil {
 		log.Fatalf("Unable to load resources: %s", err)
@@ -69,7 +69,6 @@ func downloadTranslations(rootDir string, doneChan chan bool, sourceLang string,
 		log.Fatalf("Failed to download translation files: %s", err)
 	}
 
-
 	for lang, translation := range translations {
 		path, ok := file.Translations[lang]
 		if !ok {
@@ -81,7 +80,6 @@ func downloadTranslations(rootDir string, doneChan chan bool, sourceLang string,
 		fmt.Println("Updating translations file: " + path)
 		ioutil.WriteFile(path, []byte(translation), 0644)
 	}
-	doneChan<- true
-
+	doneChan <- true
 
 }

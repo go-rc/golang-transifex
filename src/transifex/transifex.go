@@ -13,6 +13,7 @@ import (
 const (
 	KeyValueJson string = "KEYVALUEJSON"
 )
+
 type TransifexAPI struct {
 	ApiUrl, Project, username, password string
 	client                              *http.Client
@@ -88,7 +89,7 @@ Strings updated: %v
 Strings deleted: %v
 
 `, newResource.Slug, checkDataArray[0], checkDataArray[1], checkDataArray[2])
-	} 
+	}
 	return checkErr
 }
 

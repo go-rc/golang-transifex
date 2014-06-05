@@ -37,7 +37,6 @@ func main() {
 		log.Fatalf("Error reading reading language files: \n\n%s", readFilesErr)
 	}
 
-
 	readExistingResources()
 
 	doneChannel := make(chan string, len(files))
@@ -74,7 +73,7 @@ func loadContent(lang string, file config.LocalizationFile) string {
 	if fileErr != nil {
 		log.Fatalf("Unable to load file: %s", fileErr)
 	}
-	switch file.I18nType  {
+	switch file.I18nType {
 	case transifex.KeyValueJson:
 		var data map[string]string
 		jsonErr := json.Unmarshal(content, &data)
@@ -94,7 +93,7 @@ func loadContent(lang string, file config.LocalizationFile) string {
 			}
 		}
 	}
-	return string(content);
+	return string(content)
 }
 
 func uploadFile(file config.LocalizationFile) {

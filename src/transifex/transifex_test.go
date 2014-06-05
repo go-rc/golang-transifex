@@ -54,7 +54,7 @@ func Test_CreateResource(t *testing.T) {
 	var transifexAPI = NewTransifexAPI("project", "", "")
 	transifexAPI.ApiUrl = ts.URL + "/"
 
-	resource := UploadResourceRequest{BaseResource{"slug", "name", "KEYVALUEJSON", "hi", []string{}}, "data", "true"}
+	resource := UploadResourceRequest{BaseResource{"slug", "name", "KEYVALUEJSON", "hi", ""}, "data", "true"}
 	err := transifexAPI.CreateResource(resource)
 	if err != nil {
 		t.Error("Failed to list sources", err)

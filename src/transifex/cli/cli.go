@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"path/filepath"
+	"strings"
 )
 
 type CLI struct {
@@ -18,9 +18,9 @@ type CLI struct {
 func NewCLI() CLI {
 	cli := CLI{
 		projectSlug: flag.String("project", "", "REQUIRED - the transifex project slug"),
-		configFile: flag.String("config", "", "REQUIRED - The location of the configuration file"),
-		username: flag.String("username", "", "The transifex username"),
-		password: flag.String("password", "", "The transifex password")}
+		configFile:  flag.String("config", "", "REQUIRED - The location of the configuration file"),
+		username:    flag.String("username", "", "The transifex username"),
+		password:    flag.String("password", "", "The transifex password")}
 	flag.Parse()
 	if *cli.configFile == "" {
 		fmt.Printf("The 'config' flag is required.  \n\n")
