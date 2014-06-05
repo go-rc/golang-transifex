@@ -10,6 +10,9 @@ import (
 	"net/http/httputil"
 )
 
+const (
+	KeyValueJson string = "KEYVALUEJSON"
+)
 type TransifexAPI struct {
 	ApiUrl, Project, username, password string
 	client                              *http.Client
@@ -75,14 +78,17 @@ func (t TransifexAPI) CreateResource(newResource UploadResourceRequest) error {
 	}
 
 	checkData, checkErr := t.checkValidJsonResponse(resp, fmt.Sprintf("Failed to create resource: %s\n", newResource.Slug))
-	checkDataArray := checkData.([]interface{})
-	fmt.Printf(`Create Resource Summary:
+	switch checkData.(type) {
+	case []interface{}:
+		checkDataArray := checkData.([]interface{})
+		fmt.Printf(`Create %s Summary:
 
 Strings Added: %v
 Strings updated: %v
 Strings deleted: %v
 
-`, checkDataArray[0], checkDataArray[1], checkDataArray[2])
+`, newResource.Slug, checkDataArray[0], checkDataArray[1], checkDataArray[2])
+	} 
 	return checkErr
 }
 
@@ -99,13 +105,13 @@ func (t TransifexAPI) UpdateResourceContent(slug, content string) error {
 
 	checkData, checkErr := t.checkValidJsonResponse(resp, fmt.Sprintf("Error updating content of %s", slug))
 	dataMap := checkData.(map[string]interface{})
-	fmt.Printf(`Update Source Language Content Summary:
+	fmt.Printf(`Update %s Source Language Content Summary:
 
 Strings Added: %v
 Strings updated: %v
 Strings deleted: %v
 
-`, dataMap["strings_added"], dataMap["strings_updated"], dataMap["strings_delete"])
+`, slug, dataMap["strings_added"], dataMap["strings_updated"], dataMap["strings_delete"])
 	return checkErr
 }
 
@@ -130,13 +136,13 @@ func (t TransifexAPI) UploadTranslationFile(slug, langCode, content string) erro
 
 	checkData, checkErr := t.checkValidJsonResponse(resp, fmt.Sprintf("Error adding %s translations for %s", langCode, slug))
 	dataMap := checkData.(map[string]interface{})
-	fmt.Printf(`Update %s Translation summary:
+	fmt.Printf(`Update %s %s Translation summary:
 
 Strings Added: %v
 Strings updated: %v
 Strings deleted: %v
 
-`, langCode, dataMap["strings_added"], dataMap["strings_updated"], dataMap["strings_delete"])
+`, slug, langCode, dataMap["strings_added"], dataMap["strings_updated"], dataMap["strings_delete"])
 	return checkErr
 }
 

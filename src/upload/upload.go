@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -43,11 +44,7 @@ func main() {
 	defer close(doneChannel)
 
 	for _, file := range files {
-		go func() {
-			uploadFile(file)
-			addTranslations(file)
-			doneChannel <- ""
-		}()
+		go upload(doneChannel, file)
 	}
 
 	for done := 0; done < len(files); {
@@ -55,6 +52,12 @@ func main() {
 
 		done++
 	}
+}
+
+func upload(doneChannel chan string, file config.LocalizationFile) {
+	uploadFile(file)
+	addTranslations(file)
+	doneChannel <- file.Slug
 }
 
 func readBody(resp http.Response) []byte {
@@ -65,13 +68,39 @@ func readBody(resp http.Response) []byte {
 	return bytes
 }
 
-func uploadFile(file config.LocalizationFile) {
-	slug := file.Slug
+func loadContent(lang string, file config.LocalizationFile) string {
 	filename := file.Translations[sourceLang]
 	content, fileErr := ioutil.ReadFile(rootDir + filename)
 	if fileErr != nil {
 		log.Fatalf("Unable to load file: %s", fileErr)
 	}
+	switch file.I18nType  {
+	case transifex.KeyValueJson:
+		var data map[string]string
+		jsonErr := json.Unmarshal(content, &data)
+		if jsonErr != nil {
+			log.Fatalf("%s is identifies as %s in the configuration file but is not valid json: %s", filename, file.I18nType, jsonErr)
+		}
+		for key, value := range data {
+			if key == "" {
+				delete(data, key)
+			}
+			if value == "" {
+				data[key] = " "
+			}
+			content, jsonErr = json.Marshal(data)
+			if jsonErr != nil {
+				panic("An error occurred when encoding json after updating json so that transifex can use it")
+			}
+		}
+	}
+	return string(content);
+}
+
+func uploadFile(file config.LocalizationFile) {
+	slug := file.Slug
+	filename := file.Translations[sourceLang]
+	content := loadContent(sourceLang, file)
 	req := transifex.UploadResourceRequest{file.BaseResource, string(content), "true"}
 
 	if _, has := existingResources[slug]; !has {
@@ -102,14 +131,11 @@ func readExistingResources() {
 }
 
 func addTranslations(file config.LocalizationFile) {
-	for lang, translationFile := range file.Translations {
+	for lang, _ := range file.Translations {
 		if lang != sourceLang {
-			content, fileErr := ioutil.ReadFile(rootDir + translationFile)
-			if fileErr != nil {
-				log.Fatalf("Unable to load file: %s", fileErr)
-			}
+			content := loadContent(lang, file)
 
-			transifexApi.UploadTranslationFile(file.Slug, lang, string(content))
+			transifexApi.UploadTranslationFile(file.Slug, lang, content)
 		}
 	}
 }
