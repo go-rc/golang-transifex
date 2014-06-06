@@ -1,7 +1,6 @@
 package transifex
 
 import (
-	"strings"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -9,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 )
 
 const (
@@ -153,7 +153,7 @@ func (t TransifexAPI) SourceLanguage() (string, error) {
 		fmt.Println("Executing transifex.SourceLanguage")
 	}
 
-	jsonData, err := t.getJson(t.ApiUrl + "/project/" + t.Project, "Error loading SourceLanguage")
+	jsonData, err := t.getJson(t.ApiUrl+"/project/"+t.Project, "Error loading SourceLanguage")
 	if err != nil {
 		return "", err
 	}

@@ -8,6 +8,7 @@ import (
 	"transifex"
 	"transifex/cli"
 	"transifex/config"
+	"transifex/format"
 )
 
 func main() {
@@ -68,18 +69,14 @@ func downloadTranslations(rootDir string, doneChan chan bool, sourceLang string,
 	if err != nil {
 		log.Fatalf("Failed to download translation files: %s", err)
 	}
-
+	format, ok := format.Formats[file.I18nType]
+	if !ok {
+		log.Fatalf("No registered format %q", file.I18nType)
+	}
 	for lang, translation := range translations {
-		path, ok := file.Translations[lang]
-		if !ok {
-			basicPath := filepath.Dir(file.Translations[sourceLang])
-			fileName := fmt.Sprintf("%s-%s.json", lang, file.Slug)
-			path = filepath.Join(basicPath, fileName)
+		if err = format.Write(rootDir, lang, translation, file); err != nil {
+			log.Fatalf("Error writing out a translation: %s, %s\nError: %s\n\n Translation Data:\n%s", lang, file, err, translation)
 		}
-		path = filepath.Join(rootDir, path)
-		fmt.Println("Updating translations file: " + path)
-		ioutil.WriteFile(path, []byte(translation), 0644)
 	}
 	doneChan <- true
-
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -9,6 +8,7 @@ import (
 	"transifex"
 	"transifex/cli"
 	"transifex/config"
+	"transifex/format"
 )
 
 var sourceLang string
@@ -26,7 +26,6 @@ func main() {
 	if sourceLang, err = transifexApi.SourceLanguage(); err != nil {
 		log.Fatalf("\n\nError loading the transifext project data: \n%s", err)
 	}
-
 
 	files, readFilesErr := config.ReadConfig(transifexCLI.ConfigFile(), rootDir, sourceLang, transifexApi)
 
@@ -66,29 +65,16 @@ func readBody(resp http.Response) []byte {
 
 func loadContent(lang string, file config.LocalizationFile) string {
 	filename := file.Translations[lang]
-	content, fileErr := ioutil.ReadFile(rootDir + filename)
-	if fileErr != nil {
-		log.Fatalf("Unable to load file: %s", fileErr)
+	content, err := ioutil.ReadFile(rootDir + filename)
+	if err != nil {
+		log.Fatalf("Unable to load file: %s", err)
 	}
-	switch file.I18nType {
-	case transifex.KeyValueJson:
-		var data map[string]string
-		jsonErr := json.Unmarshal(content, &data)
-		if jsonErr != nil {
-			log.Fatalf("%s is identifies as %s in the configuration file but is not valid json: %s", filename, file.I18nType, jsonErr)
-		}
-		for key, value := range data {
-			if key == "" {
-				delete(data, key)
-			}
-			if value == "" {
-				data[key] = " "
-			}
-			content, jsonErr = json.Marshal(data)
-			if jsonErr != nil {
-				panic("An error occurred when encoding json after updating json so that transifex can use it")
-			}
-		}
+	format := format.Formats[file.I18nType]
+
+	content, file.I18nType, err = format.Clean(content)
+
+	if err != nil {
+		log.Fatalf("Unable to clean and read content of %s.\nError:\n%s", file, err)
 	}
 	return string(content)
 }
