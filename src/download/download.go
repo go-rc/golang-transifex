@@ -73,10 +73,14 @@ func downloadTranslations(rootDir string, doneChan chan bool, sourceLang string,
 	if !ok {
 		log.Fatalf("No registered format %q", file.I18nType)
 	}
-	for lang, translation := range translations {
-		if err = format.Write(rootDir, lang, translation, file); err != nil {
-			log.Fatalf("Error writing out a translation: %s, %s\nError: %s\n\n Translation Data:\n%s", lang, file, err, translation)
+	for _, path := range file.Translations {
+		dir := filepath.Join(rootDir, filepath.Dir(path))
+		for lang, translation := range translations {
+			if err = format.Write(path, lang, translation, file); err != nil {
+				log.Fatalf("Error writing out a translation: %s, %s\nError: %s\n\n Translation Data:\n%s", lang, file, err, translation)
+			}
 		}
+		doneChan <- true
+		break
 	}
-	doneChan <- true
 }

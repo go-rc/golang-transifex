@@ -4,6 +4,7 @@
 		"filename" : "core",
 		"name" : "Angular UI Common Strings",
 		"slug" : "core",
+		"structure": "LANG-NAME",
 		"priority" : "0",
 		"categories" : ["Angular_UI"]
 	}]

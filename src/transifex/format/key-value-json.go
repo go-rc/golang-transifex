@@ -1,12 +1,11 @@
 package format
 
 import (
-	"fmt"
 	"encoding/json"
-	"transifex/config"
-	"path/filepath"
+	"fmt"
 	"io/ioutil"
 )
+
 type KeyValueJson struct{}
 
 func (f KeyValueJson) Clean(content []byte) ([]byte, string, error) {
@@ -31,17 +30,8 @@ func (f KeyValueJson) Clean(content []byte) ([]byte, string, error) {
 	return content, "KEYVALUEJSON", nil
 
 }
-func (f KeyValueJson) Write(rootDir, langCode, translation string, file config.LocalizationFile) error {
-	path, ok := file.Translations[langCode]
-	if !ok {
-		for _, path := range file.Translations {
-			basicPath := filepath.Dir(path)
-			fileName := fmt.Sprintf("%s-%s.json", langCode, file.Slug)
-			path = filepath.Join(basicPath, fileName)
-			break;
-		}
-	}
-	path = filepath.Join(rootDir, path)
+func (f KeyValueJson) Write(rootDir, langCode, srcLang, filename, translation string, fileLocator FileLocator) error {
+	path := fileLocator.Find(rootDir, langCode, filename, "json")
 	fmt.Println("Updating translations file: " + path)
 	return ioutil.WriteFile(path, []byte(translation), 0644)
 }

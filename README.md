@@ -35,6 +35,7 @@ A configuration file is required that declares all the "resources".
 			"name" : "Angular UI Common Strings",
 			"slug" : "core",
 			"priority" : "0",
+			"structure": "LANG-NAME",			
 			"categories" : ["Angular_UI"]
 		}]
 	}
@@ -47,4 +48,5 @@ A configuration file is required that declares all the "resources".
 * `name` the display name in transifex of the resource
 * `slug` an id for the resource in transifex.  This is used to address the resource via the transifex API.
 * `priority` importance of the resource.  
+* `structure` the strategy for finding the language files.  For example LANG-NAME if all files are in the same directory and have the language code as the prefix
 * `categories` categories of the resource to use for organizing translation files

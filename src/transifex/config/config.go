@@ -8,10 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 	"transifex"
+	"transifex/format"
 )
 
 type LocalizationFile struct {
 	transifex.BaseResource
+	Filename     string
+	Structure    format.FileLocator
+	Format       format.Format
 	Translations map[string]string
 }
 
@@ -61,13 +65,15 @@ func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI
 			name := nextFile["name"].(string)
 			slug := nextFile["slug"].(string)
 			priority := nextFile["priority"].(string)
+			structure := format.FileLocators[nextFile["structure"].(string)]
+			fname := nextFile["filename"].(string)
 			var categories []string
 			for _, c := range nextFile["categories"].([]interface{}) {
 				categories = append(categories, c.(string))
 			}
 			resource := LocalizationFile{
 				transifex.BaseResource{slug, name, i18nType, string(priority), strings.Join(categories, " ")},
-				translations}
+				fname, structure, format.Formats[i18nType], translations}
 			files = append(files, resource)
 		}
 	}
