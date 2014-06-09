@@ -90,7 +90,6 @@ func Test_WriteUpdateExisting(t *testing.T) {
 		t.Errorf("Unable to parse result xml: %q\n\n%s", err, string(xmlData))
 	}
 
-	println("--", string(xmlData))
 	tu.AssertEquals("", "newvalue1", data.B.L.Text, t)
 	tu.AssertEquals("", "newdv", data.B.D.Text, t)
 	tu.AssertEquals("", "newvalue2", data.C.Text, t)

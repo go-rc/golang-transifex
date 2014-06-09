@@ -41,21 +41,14 @@ func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI
 			if !strings.HasSuffix(dir, "/") {
 				dir += "/"
 			}
-			filename := "-" + nextFile["filename"].(string) + ".json"
 
-			candidates, readErr := ioutil.ReadDir(rootDir + dir)
+			i18nFormat := format.Formats[i18nType]
+			fname := nextFile["filename"].(string)
+			structure := format.FileLocators[nextFile["structure"].(string)]
+			translations, readErr := structure.List(filepath.Join(rootDir, dir), fname, i18nFormat.Ext())
 
 			if readErr != nil {
 				return nil, readErr
-			}
-
-			translations := make(map[string]string)
-			for _, file := range candidates {
-				name := file.Name()
-				if !file.IsDir() && strings.HasSuffix(name, filename) {
-					lang := strings.Split(filepath.Base(name), filename)[0]
-					translations[lang] = dir + name
-				}
 			}
 
 			if _, has := translations[sourceLang]; !has {
@@ -65,15 +58,13 @@ func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI
 			name := nextFile["name"].(string)
 			slug := nextFile["slug"].(string)
 			priority := nextFile["priority"].(string)
-			structure := format.FileLocators[nextFile["structure"].(string)]
-			fname := nextFile["filename"].(string)
 			var categories []string
 			for _, c := range nextFile["categories"].([]interface{}) {
 				categories = append(categories, c.(string))
 			}
 			resource := LocalizationFile{
 				transifex.BaseResource{slug, name, i18nType, string(priority), strings.Join(categories, " ")},
-				fname, structure, format.Formats[i18nType], translations}
+				fname, structure, i18nFormat, translations}
 			files = append(files, resource)
 		}
 	}

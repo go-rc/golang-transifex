@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"path/filepath"
 	"os"
 	"io"
 	"io/ioutil"
@@ -18,6 +19,7 @@ import (
 // the format that is uploaded to transifex will be a valid Json key value formatted file
 type FlattenXmlToJson struct {}
 
+func (f FlattenXmlToJson) Ext() string {return "json"}
 
 func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 
@@ -109,6 +111,9 @@ func (f FlattenXmlToJson) Write(rootDir, langCode, srcLang, filename, translatio
 	}
 
 	if err = encoder.Flush(); err != nil {
+		return err
+	}
+	if err = os.MkdirAll(filepath.Dir(path), 644); err != nil {
 		return err
 	}
 	return ioutil.WriteFile(path, out.Bytes(), 644)
