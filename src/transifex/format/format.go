@@ -42,10 +42,16 @@ type FileLocator interface {
 	List(path, name, ext string) (map[string]string, error)
 }
 
-var identityMapper = func (lang string)string {return lang}
+var identityMapper = func (lang string, reverse bool)string {return lang}
 
-var langCodeMapper2To3 = func (lang string)string {
-	code, has := isoLangCodes[lang]
+var langCodeMapper2To3 = func (lang string, reverse bool)string {
+	var mapping map[string]string
+	if reverse {
+		mapping = threeToTwoLetterIsoCode
+	} else {
+		mapping = twoToThreeLetterIsoCode
+	}
+	code, has := mapping[lang]
 	if !has {
 		panic("There is no known language code mapper for: " + lang)
 	}
@@ -61,11 +67,13 @@ var FileLocators = map[string]FileLocator{
 // All translation files in same directory and have pattern: lang-name.ext
 type LangNameLocator struct{
 	// map the 2 letter language code to the required code for lookup
-	langCodeMapper func(string)string
+	// first param is the letter to map
+	// second param is the direction of the mapping (ie 2letter -> 3letter or vice-versa)
+	langCodeMapper func(string, bool)string
 }
 
 func (l LangNameLocator) Find(path, lang, name, ext string) string {
-	flang := l.langCodeMapper(lang)
+	flang := l.langCodeMapper(lang, false)
 	fileName := fmt.Sprintf("%s-%s.%s", flang, name, ext)
 	return filepath.Join(path, fileName)
 }
@@ -89,6 +97,7 @@ func (l LangNameLocator) List(path, name, ext string) (map[string]string, error)
 
 		if strings.HasSuffix(fname, filename) {
 			lang := strings.Split(fname, "-")[0]
+			lang = l.langCodeMapper(lang, true)
 			translationFiles[lang] = fname
 		}
 	}
@@ -104,11 +113,13 @@ func (l LangNameLocator) List(path, name, ext string) (map[string]string, error)
 //    -- name.<ext>
 type LocDirLocator struct {
 	// map the 2 letter language code to the required code for lookup
-	langCodeMapper func(string)string
+	// first param is the letter to map
+	// second param is the direction of the mapping (ie 2letter -> 3letter or vice-versa)
+	langCodeMapper func(string, bool)string
 }
 
 func (l LocDirLocator) Find(path, lang, name, ext string) string {
-	flang := l.langCodeMapper(lang)
+	flang := l.langCodeMapper(lang, false)
 	fileName := fmt.Sprintf("%s/%s.%s", flang, name, ext)
 	return filepath.Join(path, fileName)
 }
@@ -129,9 +140,11 @@ func (l LocDirLocator) List(path, name, ext string) (map[string]string, error) {
 
 	for _, locDir := range locDirs {
 		loc := locDir.Name()
+
 		fname := filepath.Join(path, loc, filename)
 		_, err := os.Stat(fname)
 		if err == nil {
+			loc = l.langCodeMapper(loc, true)
 			translationFiles[loc] = fname
 		}
 	}
@@ -139,10 +152,19 @@ func (l LocDirLocator) List(path, name, ext string) (map[string]string, error) {
 	return translationFiles, nil
 }
 
-var isoLangCodes = map[string]string {
+var twoToThreeLetterIsoCode = map[string]string {
 	"en":"eng",
 	"de":"ger",
 	"fr":"fre",
 	"it":"ita",
 	"rm":"roh",
 	"es":"spa"}
+
+var threeToTwoLetterIsoCode map[string]string
+
+func init() {
+	threeToTwoLetterIsoCode = make(map[string]string)
+	for key, value := range twoToThreeLetterIsoCode {
+		threeToTwoLetterIsoCode[value] = key
+	}
+}
