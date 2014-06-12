@@ -5,21 +5,20 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"path/filepath"
-	"os"
 	"io"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
 )
-
 
 // A format which takes nested xml that has the translations as the text of the leaf nodes
 // since the xml can be nested and the nodes can have attributes, the path to the leaf node is encoded
 // as the key of the Json.
 // the format that is uploaded to transifex will be a valid Json key value formatted file
-type FlattenXmlToJson struct {}
+type FlattenXmlToJson struct{}
 
-func (f FlattenXmlToJson) Ext() string {return "json"}
+func (f FlattenXmlToJson) Ext() string { return "json" }
 
 func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 
@@ -59,10 +58,10 @@ func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 }
 
 type Node struct {
-	name xml.Name
-	attrs []xml.Attr
-	value xml.CharData
-	key string
+	name     xml.Name
+	attrs    []xml.Attr
+	value    xml.CharData
+	key      string
 	children map[string]Node
 }
 
@@ -76,7 +75,7 @@ func (f FlattenXmlToJson) Write(rootDir, langCode, srcLang, filename, translatio
 	}
 	var out = bytes.Buffer{}
 	encoder := xml.NewEncoder(&out)
-	
+
 	srcFile := fileLocator.Find(rootDir, srcLang, filename, "xml")
 
 	srcContent, err := os.Open(srcFile)

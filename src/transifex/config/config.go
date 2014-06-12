@@ -52,7 +52,7 @@ func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI
 			}
 
 			if _, has := translations[sourceLang]; !has {
-				log.Fatalf("%s translations file is required for translation resource: %s/%s", sourceLang, dir, filename)
+				log.Fatalf("%s translations file is required for translation resource: %s/%s", sourceLang, dir, fname)
 			}
 
 			name := nextFile["name"].(string)
@@ -63,8 +63,16 @@ func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI
 				categories = append(categories, c.(string))
 			}
 			resource := LocalizationFile{
-				transifex.BaseResource{slug, name, i18nType, string(priority), strings.Join(categories, " ")},
-				fname, structure, i18nFormat, translations}
+				transifex.BaseResource{
+					Slug: slug, 
+					Name: name, 
+					I18nType: i18nType, 
+					Priority: string(priority), 
+					Category: strings.Join(categories, " ")},
+				fname, 
+				structure, 
+				i18nFormat,
+				translations}
 			files = append(files, resource)
 		}
 	}

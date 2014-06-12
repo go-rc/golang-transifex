@@ -308,6 +308,6 @@ func (t TransifexAPI) checkValidJsonResponse(resp *http.Response, errorMsg strin
 		}
 	}
 
-	fmt.Println("\n")
+	fmt.Print("\n")
 	return jsonData, nil
 }

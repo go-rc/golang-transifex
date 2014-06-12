@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const version = "0.1.0"
+
 type CLI struct {
 	projectSlug, configFile, username, password *string
 	debug                                       *bool
@@ -17,6 +19,7 @@ type CLI struct {
 }
 
 func NewCLI() CLI {
+	versionFlag := flag.Bool("version", false, "Print version")
 	cli := CLI{
 		projectSlug: flag.String("project", "", "REQUIRED - the transifex project slug"),
 		configFile:  flag.String("config", "", "REQUIRED - The location of the configuration file"),
@@ -25,6 +28,11 @@ func NewCLI() CLI {
 		debug:       flag.Bool("v", false, "if true then debug information will be printed")}
 
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Println("Version " + version)
+		os.Exit(0)
+	}
 	if *cli.configFile == "" {
 		fmt.Printf("The 'config' flag is required.  \n\n")
 		flag.PrintDefaults()

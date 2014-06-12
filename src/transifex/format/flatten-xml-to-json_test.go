@@ -47,7 +47,7 @@ func Test_Clean(t *testing.T) {
 	json.Unmarshal(cleaned, &prop)
 
 	if len(prop) != 3 {
-		t.Errorf("Expected 3 items but found %s in %s", len(prop), prop)
+		t.Errorf("Expected 3 items but found %d in %s", len(prop), prop)
 	}
 
 	for key, item := range prop {

@@ -1,9 +1,9 @@
 package format
 
 import (
-	"os"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -24,7 +24,7 @@ type Format interface {
 	// Write a new translation to the correct translation file
 	// * rootDir - path to the root of the translation files directory tree
 	// * langCode - the language code of the translation
-	// * srcLang - the source language 
+	// * srcLang - the source language
 	// * translation - the translation text
 	// * fileLocator - strategy for creating the path to the translation file
 	Write(rootDir, langCode, srcLang, filename, translation string, fileLocator FileLocator) error
@@ -42,9 +42,9 @@ type FileLocator interface {
 	List(path, name, ext string) (map[string]string, error)
 }
 
-var identityMapper = func (lang string, reverse bool)string {return lang}
+var identityMapper = func(lang string, reverse bool) string { return lang }
 
-var langCodeMapper2To3 = func (lang string, reverse bool)string {
+var langCodeMapper2To3 = func(lang string, reverse bool) string {
 	var mapping map[string]string
 	if reverse {
 		mapping = threeToTwoLetterIsoCode
@@ -59,17 +59,17 @@ var langCodeMapper2To3 = func (lang string, reverse bool)string {
 	return code
 }
 var FileLocators = map[string]FileLocator{
-	"LANG-NAME": LangNameLocator{identityMapper},
+	"LANG-NAME":        LangNameLocator{identityMapper},
 	"3-CHAR-LANG-NAME": LangNameLocator{langCodeMapper2To3},
-	"3-CHAR-LOC-DIR":LocDirLocator{langCodeMapper2To3},
-	"LOC-DIR":LocDirLocator{identityMapper}}
+	"3-CHAR-LOC-DIR":   LocDirLocator{langCodeMapper2To3},
+	"LOC-DIR":          LocDirLocator{identityMapper}}
 
 // All translation files in same directory and have pattern: lang-name.ext
-type LangNameLocator struct{
+type LangNameLocator struct {
 	// map the 2 letter language code to the required code for lookup
 	// first param is the letter to map
 	// second param is the direction of the mapping (ie 2letter -> 3letter or vice-versa)
-	langCodeMapper func(string, bool)string
+	langCodeMapper func(string, bool) string
 }
 
 func (l LangNameLocator) Find(path, lang, name, ext string) string {
@@ -115,7 +115,7 @@ type LocDirLocator struct {
 	// map the 2 letter language code to the required code for lookup
 	// first param is the letter to map
 	// second param is the direction of the mapping (ie 2letter -> 3letter or vice-versa)
-	langCodeMapper func(string, bool)string
+	langCodeMapper func(string, bool) string
 }
 
 func (l LocDirLocator) Find(path, lang, name, ext string) string {
@@ -152,13 +152,13 @@ func (l LocDirLocator) List(path, name, ext string) (map[string]string, error) {
 	return translationFiles, nil
 }
 
-var twoToThreeLetterIsoCode = map[string]string {
-	"en":"eng",
-	"de":"ger",
-	"fr":"fre",
-	"it":"ita",
-	"rm":"roh",
-	"es":"spa"}
+var twoToThreeLetterIsoCode = map[string]string{
+	"en": "eng",
+	"de": "ger",
+	"fr": "fre",
+	"it": "ita",
+	"rm": "roh",
+	"es": "spa"}
 
 var threeToTwoLetterIsoCode map[string]string
 
