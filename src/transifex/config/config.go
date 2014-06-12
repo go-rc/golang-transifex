@@ -4,22 +4,54 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 	"strings"
 	"transifex"
 	"transifex/format"
 )
 
-type LocalizationFile struct {
-	transifex.BaseResource
-	Filename     string
-	Structure    format.FileLocator
-	Format       format.Format
-	Translations map[string]string
+type configElement struct {
+	Type string `json:"type"`
+	Structure string `json:"structure"`
+	Resources []LocalizationFile `json:"resources"`
 }
 
-func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI) (files []LocalizationFile, err error) {
+type LocalizationFile struct {
+	transifex.BaseResource
+ 	Fname     string `json:"fname"`
+ 	Categories   []string `json:"categories"`
+ 	Dir          string `json:"dir"`
+	Translations map[string] string
+	Format format.Format
+	FileLocator format.FileLocator
+
+}
+
+func (f *LocalizationFile) init(rootDir string, elem configElement) error {
+	f.I18nType = elem.Type
+	f.Category = strings.Join(f.Categories, " ")
+	f.Format = format.Formats[elem.Type]
+	f.FileLocator = format.FileLocators[elem.Structure]
+
+	var readErr error
+	f.Translations, readErr = f.FileLocator.List(filepath.Join(rootDir, f.Dir), f.Fname, f.Format.Ext())
+
+	if readErr != nil {
+		return readErr
+	}
+
+	return nil
+}
+
+// type LocalizationFile struct {
+// 	transifex.BaseResource
+// 	Filename     string
+// 	Structure    format.FileLocator
+// 	Format       format.Format
+// 	Translations map[string]string
+// }
+
+func ReadConfig(configFile, rootDir, sourceLang string) (files []LocalizationFile, err error) {
 	if sourceLang == "" {
 		return nil, fmt.Errorf("Source lang is empty.")
 	}
@@ -29,53 +61,20 @@ func ReadConfig(configFile, rootDir, sourceLang string, t transifex.TransifexAPI
 		return nil, err
 	}
 
-	var jsonData map[string]interface{}
+	var jsonData []configElement
 	if err := json.Unmarshal(bytes, &jsonData); err != nil {
 		return nil, err
 	}
 
-	for i18nType, array := range jsonData {
-		for _, nextFileRaw := range array.([]interface{}) {
-			nextFile := nextFileRaw.(map[string]interface{})
-			dir := nextFile["dir"].(string)
-			if !strings.HasSuffix(dir, "/") {
-				dir += "/"
+	files = []LocalizationFile{}
+	for _, elem := range jsonData {
+		for _, f := range elem.Resources {
+			if err = f.init(rootDir, elem); err != nil {
+				return nil, err
 			}
-
-			i18nFormat := format.Formats[i18nType]
-			fname := nextFile["filename"].(string)
-			structure := format.FileLocators[nextFile["structure"].(string)]
-			translations, readErr := structure.List(filepath.Join(rootDir, dir), fname, i18nFormat.Ext())
-
-			if readErr != nil {
-				return nil, readErr
-			}
-
-			if _, has := translations[sourceLang]; !has {
-				log.Fatalf("%s translations file is required for translation resource: %s/%s", sourceLang, dir, fname)
-			}
-
-			name := nextFile["name"].(string)
-			slug := nextFile["slug"].(string)
-			priority := nextFile["priority"].(string)
-			var categories []string
-			for _, c := range nextFile["categories"].([]interface{}) {
-				categories = append(categories, c.(string))
-			}
-			resource := LocalizationFile{
-				transifex.BaseResource{
-					Slug: slug, 
-					Name: name, 
-					I18nType: i18nType, 
-					Priority: string(priority), 
-					Category: strings.Join(categories, " ")},
-				fname, 
-				structure, 
-				i18nFormat,
-				translations}
-			files = append(files, resource)
+			files = append(files, f)
 		}
 	}
+	
 	return files, nil
-
 }
