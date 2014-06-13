@@ -27,7 +27,7 @@ func main() {
 		log.Fatalf("Error loading the transifext project data.")
 	}
 
-	files, readFilesErr := config.ReadConfig(transifexCLI.ConfigFile(), rootDir, sourceLang, transifexApi)
+	files, readFilesErr := config.ReadConfig(transifexCLI.ConfigFile(), rootDir, sourceLang)
 	if readFilesErr != nil {
 		fmt.Println(rootDir)
 		log.Fatalf("Error reading reading language files: \n\n%s", readFilesErr)
@@ -75,7 +75,7 @@ func downloadTranslations(rootDir string, doneChan chan bool, sourceLang string,
 	for _, path := range file.Translations {
 		dir := filepath.Join(rootDir, filepath.Dir(path))
 		for lang, translation := range translations {
-			if err = i18Nformat.Write(dir, lang, sourceLang, file.Filename, translation, file.Structure); err != nil {
+			if err = i18Nformat.Write(dir, lang, sourceLang, file.Fname, translation, file.FileLocator); err != nil {
 				log.Fatalf("Error writing out a translation: %s, %s\nError: %s\n\n Translation Data:\n%s", lang, file, err, translation)
 			}
 		}

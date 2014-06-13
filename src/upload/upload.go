@@ -27,7 +27,7 @@ func main() {
 		log.Fatalf("\n\nError loading the transifext project data: \n%s", err)
 	}
 
-	files, readFilesErr := config.ReadConfig(transifexCLI.ConfigFile(), rootDir, sourceLang, transifexApi)
+	files, readFilesErr := config.ReadConfig(transifexCLI.ConfigFile(), rootDir, sourceLang)
 
 	if readFilesErr != nil {
 		fmt.Println(rootDir)
