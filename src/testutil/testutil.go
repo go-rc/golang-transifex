@@ -9,8 +9,8 @@ import (
 
 type Node struct {
 	Name     string
-	Data	 []byte
-	file 	 bool
+	Data     []byte
+	file     bool
 	Children []Node
 }
 
@@ -36,7 +36,7 @@ func AssertEqualsInt(msg string, expected, actual int, t *testing.T) {
 }
 
 func CreateFileTree(tree Node) string {
-	if len(tree.Children) > 0 {
+	if !tree.file {
 		dir, err := ioutil.TempDir("", tree.Name)
 		if err != nil {
 			panic("Unable to create temporary directory")
@@ -61,10 +61,13 @@ func CreateFileTree(tree Node) string {
 }
 
 func createFileTreeInternal(tree Node, parent string) {
-	if len(tree.Children) > 0 {
+	if !tree.file {
 		path := filepath.Join(parent, tree.Name)
 		if err := os.Mkdir(path, 744); err != nil {
 			panic("Failed to create directory: " + path + "\n" + err.Error())
+		}
+		for _, n := range tree.Children {
+			createFileTreeInternal(n, path)
 		}
 	} else {
 		path := filepath.Join(parent, tree.Name)

@@ -18,7 +18,7 @@ import (
 // the format that is uploaded to transifex will be a valid Json key value formatted file
 type FlattenXmlToJson struct{}
 
-func (f FlattenXmlToJson) Ext() string { return "json" }
+func (f FlattenXmlToJson) Ext() string { return "xml" }
 
 func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 

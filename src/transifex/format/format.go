@@ -140,9 +140,9 @@ func (l LocDirLocator) List(path, name, ext string) (map[string]string, error) {
 
 	for _, locDir := range locDirs {
 		loc := locDir.Name()
-
 		fname := filepath.Join(path, loc, filename)
 		_, err := os.Stat(fname)
+
 		if err == nil {
 			loc = l.langCodeMapper(loc, true)
 			translationFiles[loc] = fname

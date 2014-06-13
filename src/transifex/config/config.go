@@ -11,20 +11,19 @@ import (
 )
 
 type configElement struct {
-	Type string `json:"type"`
-	Structure string `json:"structure"`
+	Type      string             `json:"type"`
+	Structure string             `json:"structure"`
 	Resources []LocalizationFile `json:"resources"`
 }
 
 type LocalizationFile struct {
 	transifex.BaseResource
- 	Fname     string `json:"fname"`
- 	Categories   []string `json:"categories"`
- 	Dir          string `json:"dir"`
-	Translations map[string] string
-	Format format.Format
-	FileLocator format.FileLocator
-
+	Fname        string   `json:"fname"`
+	Categories   []string `json:"categories"`
+	Dir          string   `json:"dir"`
+	Translations map[string]string
+	Format       format.Format
+	FileLocator  format.FileLocator
 }
 
 func (f *LocalizationFile) init(rootDir string, elem configElement) error {
@@ -75,6 +74,6 @@ func ReadConfig(configFile, rootDir, sourceLang string) (files []LocalizationFil
 			files = append(files, f)
 		}
 	}
-	
+
 	return files, nil
 }
