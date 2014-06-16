@@ -73,7 +73,7 @@ func (t TransifexAPI) CreateResource(newResource UploadResourceRequest) error {
 	if marshalErr != nil {
 		return marshalErr
 	}
-
+fmt.Println("\n\n", string(data))
 	resp, err := t.execRequest("POST", t.resourcesUrl(false), bytes.NewReader(data))
 	if err != nil {
 		return err

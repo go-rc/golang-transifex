@@ -9,6 +9,7 @@ import (
 type KeyValueJson struct{}
 
 func (f KeyValueJson) Ext() string { return "json" }
+
 func (f KeyValueJson) Clean(content []byte) ([]byte, string, error) {
 	var data map[string]string
 	jsonErr := json.Unmarshal(content, &data)

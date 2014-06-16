@@ -86,6 +86,7 @@ func (l LangNameLocator) List(path, name, ext string) (map[string]string, error)
 
 	candidates, readErr := ioutil.ReadDir(path)
 
+
 	if readErr != nil {
 		return nil, readErr
 	}
@@ -93,10 +94,10 @@ func (l LangNameLocator) List(path, name, ext string) (map[string]string, error)
 	translationFiles := map[string]string{}
 
 	for _, f := range candidates {
-		fname := f.Name()
+		fname := filepath.Join(path, f.Name())
 
 		if strings.HasSuffix(fname, filename) {
-			lang := strings.Split(fname, "-")[0]
+			lang := strings.Split(filepath.Base(fname), "-")[0]
 			lang = l.langCodeMapper(lang, true)
 			translationFiles[lang] = fname
 		}

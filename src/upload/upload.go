@@ -8,7 +8,6 @@ import (
 	"transifex"
 	"transifex/cli"
 	"transifex/config"
-	"transifex/format"
 )
 
 var sourceLang string
@@ -51,7 +50,7 @@ func main() {
 }
 
 func upload(doneChannel chan string, file config.LocalizationFile) {
-	uploadFile(file)
+	uploadFile(&file)
 	doneChannel <- file.Slug
 }
 
@@ -63,39 +62,47 @@ func readBody(resp http.Response) []byte {
 	return bytes
 }
 
-func loadContent(lang string, file config.LocalizationFile) string {
+func loadContent(lang string, file *config.LocalizationFile) string {
 	filename := file.Translations[lang]
-	content, err := ioutil.ReadFile(rootDir + filename)
+	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalf("Unable to load file: %s", err)
 	}
-	format := format.Formats[file.I18nType]
+	format := file.Format
 
-	content, file.I18nType, err = format.Clean(content)
-
+	var cleanedContent []byte
+	cleanedContent, file.I18nType, err = format.Clean(content)
 	if err != nil {
-		log.Fatalf("Unable to clean and read content of %s.\nError:\n%s", file, err)
+		log.Fatalf("Unable to clean and read content of %s.\nError:\n%v\nContent:\n%s", filename, err, string(content))
+
 	}
-	return string(content)
+
+
+	return string(cleanedContent)
 }
 
-func uploadFile(file config.LocalizationFile) {
+func uploadFile(file *config.LocalizationFile) {
 	slug := file.Slug
 	filename := file.Translations[sourceLang]
+
+	fmt.Printf("\nLoading data from translations data for %q from %s\n", file.Name, filename)
+
 	content := loadContent(sourceLang, file)
-	req := transifex.UploadResourceRequest{file.BaseResource, string(content), "true"}
 
 	if _, has := existingResources[slug]; !has {
-		fmt.Printf("Creating new resource: '%s' '%s'\n", filename, slug)
+		fmt.Printf("Creating new resource: %q (%s)\n", file.Name, slug)
+
+		req := transifex.UploadResourceRequest{file.BaseResource, string(content), "true"}
 		err := transifexApi.CreateResource(req)
 		if err != nil {
-			log.Fatalf("Error encountered sending the request to transifex: \n%s'n", err)
+			log.Fatalf("Error encountered sending the request to transifex: \n%s\n", err)
 		}
 
 		addTranslations(file)
 
 		fmt.Printf("Finished Adding '%s'\n", slug)
 	} else {
+		fmt.Printf("Updating main language content of %q (%s)\n", file.Name, slug)
 		if err := transifexApi.UpdateResourceContent(slug, string(content)); err != nil {
 			log.Fatalf("Error updating content")
 		}
@@ -114,7 +121,7 @@ func readExistingResources() {
 	}
 }
 
-func addTranslations(file config.LocalizationFile) {
+func addTranslations(file *config.LocalizationFile) {
 	for lang, _ := range file.Translations {
 		if lang != sourceLang {
 			content := loadContent(lang, file)

@@ -38,14 +38,20 @@ func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
-			key = append(key, nodeName(t))
+			name := nodeName(t)
+			if name != "" {
+				key = append(key, name)
+			}
 		case xml.EndElement:
 			key = key[:len(key)-1]
 		case xml.CharData:
-			text := string(xml.CharData(t))
-			fkey := strings.TrimSpace(strings.Join(key, " "))
-			contentJson[fkey] = text
-
+			if len(key) > 1 {
+				fkey := strings.TrimSpace(strings.Join(key[1:], " "))
+				if fkey != "" {
+					text := string(xml.CharData(t))
+					contentJson[fkey] = text
+				}
+			}
 		}
 	}
 
@@ -136,5 +142,5 @@ func nodeName(t xml.StartElement) string {
 		nodeRep.WriteString("]")
 	}
 
-	return nodeRep.String()
+	return strings.TrimSpace(nodeRep.String())
 }

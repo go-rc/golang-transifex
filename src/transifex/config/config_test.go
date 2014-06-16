@@ -19,6 +19,17 @@ func TestReadConfig_LangDir(t *testing.T) {
       "priority": "0",
       "categories": ["schemaplugin", "iso19139"]
     }]
+},{    
+    "type": "KEYVALUEJSON",
+    "structure": "LANG-NAME",
+    "resources": [{
+      "dir": "js",
+      "fname": "core",
+      "name": "Angular UI Common Strings",
+      "slug": "core",
+      "priority": "0",
+      "categories": ["Angular_UI"]
+    }]
 }]`
 	root := tu.CreateFileTree(
 		tu.Dir("xyz",
@@ -26,18 +37,21 @@ func TestReadConfig_LangDir(t *testing.T) {
 			tu.Dir("loc",
 				tu.Dir("eng", tu.File("string.xml")),
 				tu.Dir("fre", tu.File("string.xml")),
-				tu.Dir("ger", tu.File("xyz")))))
+				tu.Dir("ger", tu.File("xyz"))),
+			tu.Dir("js",
+				tu.File("en-core.json"),
+				tu.File("it-core.json"),
+				tu.File("fr-core.json"))))
 
 	files, err := ReadConfig(filepath.Join(root, "config.json"), root, "en")
 
 	if err != nil {
 		t.Errorf("Error reading config. %v", err)
 		panic(err)
-
 	}
 
-	if len(files) != 1 {
-		t.Errorf("Expected 1 file: %v", files)
+	if len(files) != 2 {
+		t.Errorf("Expected 2 file: %v", files)
 	}
 
 	if len(files[0].Translations) != 2 {
@@ -55,6 +69,29 @@ func TestReadConfig_LangDir(t *testing.T) {
 	} else if v != filepath.Join(root, "loc", "fre", "string.xml") {
 		t.Errorf("Path of fr translation was unexpected: %s", v)
 	}
+
+	if len(files[1].Translations) != 3 {
+		t.Errorf("Not 3 translations for second translations: %v", files)
+	}
+
+	if v, ok := files[1].Translations["fr"]; !ok {
+		t.Errorf("Expected fr translation: %v", files[1].Translations)
+	} else if v != filepath.Join(root, "js", "fr-core.json") {
+		t.Errorf("Path of fr translation was unexpected: %s", v)
+	}
+
+	if v, ok := files[1].Translations["en"]; !ok {
+		t.Errorf("Expected en translation: %v", files[1].Translations)
+	} else if v != filepath.Join(root, "js", "en-core.json") {
+		t.Errorf("Path of en translation was unexpected: %s", v)
+	}
+
+	if v, ok := files[1].Translations["it"]; !ok {
+		t.Errorf("Expected it translation: %v", files[1].Translations)
+	} else if v != filepath.Join(root, "js", "it-core.json") {
+		t.Errorf("Path of it translation was unexpected: %s", v)
+	}
+
 }
 
 func Test_UnmappedLang(t *testing.T) {

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -27,7 +28,6 @@ type LocalizationFile struct {
 }
 
 func (f *LocalizationFile) init(rootDir string, elem configElement) error {
-	f.I18nType = elem.Type
 	f.Category = strings.Join(f.Categories, " ")
 	f.Format = format.Formats[elem.Type]
 	f.FileLocator = format.FileLocators[elem.Structure]
@@ -65,15 +65,20 @@ func ReadConfig(configFile, rootDir, sourceLang string) (files []LocalizationFil
 		return nil, err
 	}
 
+	logSummary := []string{}
 	files = []LocalizationFile{}
 	for _, elem := range jsonData {
 		for _, f := range elem.Resources {
 			if err = f.init(rootDir, elem); err != nil {
 				return nil, err
 			}
+			logSummary = append(logSummary, fmt.Sprintf("%s -- %s", f.Dir, f.Fname))
 			files = append(files, f)
 		}
 	}
+
+
+	log.Printf("\nSuccessfully loaded %q.  Configuration files are as follows: \n  * %s\n\n", configFile, strings.Join(logSummary, "\n  * "))
 
 	return files, nil
 }
