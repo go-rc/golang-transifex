@@ -3,6 +3,8 @@ golang-transifex
 
 Simple library and command line tools for uploading and downloading translation files to/from transifex server
 
+Note: Please be nice, this is the first go program I have ever written.  It already looks old to me :)
+
 Upload
 ------
 
