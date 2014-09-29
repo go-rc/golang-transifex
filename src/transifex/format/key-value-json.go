@@ -7,7 +7,9 @@ import (
 )
 
 type KeyValueJson struct{}
-
+func (f *KeyValueJson) Init(initParams map[string]interface{}) {
+	// nothing to do at the moment
+}
 func (f KeyValueJson) Ext() string { return "json" }
 
 func (f KeyValueJson) Clean(content []byte) ([]byte, string, error) {

@@ -16,16 +16,23 @@ import (
 // since the xml can be nested and the nodes can have attributes, the path to the leaf node is encoded
 // as the key of the Json.
 // the format that is uploaded to transifex will be a valid Json key value formatted file
-type FlattenXmlToJson struct{}
+type FlattenXmlToJson struct{
+	key string
+}
+func (f *FlattenXmlToJson) Init(initParams map[string]interface{}) {
+	if keyInterface, has := initParams["key"]; has {
+		f.key = keyInterface.(string)
+	}
+}
+func (f *FlattenXmlToJson) Ext() string { return "xml" }
 
-func (f FlattenXmlToJson) Ext() string { return "xml" }
-
-func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
+func (f *FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 
 	r := strings.NewReader(string(content))
 	parser := xml.NewDecoder(r)
 
 	contentJson := make(map[string]string)
+	rawKeys := make(map[string]int)
 
 	key := []string{}
 	for {
@@ -39,17 +46,17 @@ func (f FlattenXmlToJson) Clean(content []byte) ([]byte, string, error) {
 		switch t := token.(type) {
 		case xml.StartElement:
 			name := nodeName(t)
-			if name != "" {
-				key = append(key, name)
+			if name == "" {
+				panic("A node name is an empty string: \n" + string(content))
 			}
+			key = append(key, name)
 		case xml.EndElement:
 			key = key[:len(key)-1]
 		case xml.CharData:
 			if len(key) > 1 {
-				fkey := strings.TrimSpace(strings.Join(key[1:], " "))
-				if fkey != "" {
-					text := string(xml.CharData(t))
-					contentJson[fkey] = text
+				fkey, add := finalKey(key, rawKeys, xml.CharData(t))
+				if add {
+					contentJson[fkey] = string(xml.CharData(t))
 				}
 			}
 		}
@@ -93,6 +100,7 @@ func (f FlattenXmlToJson) Write(rootDir, langCode, srcLang, filename, translatio
 	parser := xml.NewDecoder(srcContent)
 
 	key := []string{}
+	rawKeys := map[string]int{}
 	for {
 		token, err := parser.Token()
 		if err != nil {
@@ -109,10 +117,22 @@ func (f FlattenXmlToJson) Write(rootDir, langCode, srcLang, filename, translatio
 			key = key[:len(key)-1]
 			encoder.EncodeToken(t)
 		case xml.CharData:
-			fkey := strings.TrimSpace(strings.Join(key, " "))
-			newData := translationJson[fkey]
-			encoder.EncodeToken(xml.CharData(newData))
+			fkey, add := finalKey(key, rawKeys, xml.CharData(t))
+			if add {
+				newData := translationJson[fkey]
+				delete(translationJson, fkey)
+
+				encoder.EncodeToken(xml.CharData(newData))
+			}
 		}
+	}
+
+	if len(translationJson) > 0 {
+		extraKeys := []string{}
+		for key, _ := range translationJson {
+			extraKeys = append(extraKeys, key)
+		}
+		return fmt.Errorf("One or more translations did not have a matching key in the xml file: [%s]", strings.Join(extraKeys, ", "))
 	}
 
 	if err = encoder.Flush(); err != nil {
@@ -143,4 +163,23 @@ func nodeName(t xml.StartElement) string {
 	}
 
 	return strings.TrimSpace(nodeRep.String())
+}
+
+// returns the final key and true or "", false.  If the second return value is false 
+// then it has been determined that the node is not a translation node
+func finalKey(key []string, rawKeys map[string]int, t xml.CharData) (string, bool) {
+	fkey := strings.TrimSpace(strings.Join(key[1:], " "))
+	text := string(xml.CharData(t))
+	if fkey != "" && strings.TrimSpace(text) != "" {
+		if _, has := rawKeys[fkey]; has {
+			i := rawKeys[fkey]
+			rawKeys[fkey] = i + 1
+			return fmt.Sprintf("%s<%d>", fkey,i), true
+		} else {
+			rawKeys[fkey] = 2
+			return fkey, true
+		}
+	}
+
+	return "", false
 }

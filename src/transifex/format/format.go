@@ -13,6 +13,8 @@ import (
 // * A json file with empty values should be converted to a string with a single space
 // * An xml file with nested tags should be flattened
 type Format interface {
+	// initialize the format with any extra paramaters available in the configuration
+	Init(map[string]interface{})
 	// Returns the extension of the format files
 	Ext() string
 	// takes the raw data read from file
@@ -30,7 +32,10 @@ type Format interface {
 	Write(rootDir, langCode, srcLang, filename, translation string, fileLocator FileLocator) error
 }
 
-var Formats = map[string]Format{"KEYVALUEJSON": new(KeyValueJson), "FLATTENXMLTOJSON": new(FlattenXmlToJson)}
+// factory methods for creating a format object
+var Formats = map[string]func()Format {
+	"KEYVALUEJSON": func()Format {return new(KeyValueJson)}, 
+	"FLATTENXMLTOJSON": func()Format {return new(FlattenXmlToJson)}}
 
 // Strategy for creating the path to a translation file
 type FileLocator interface {

@@ -25,11 +25,13 @@ type LocalizationFile struct {
 	Translations map[string]string
 	Format       format.Format
 	FileLocator  format.FileLocator
+	ExtraParams  map[string]interface{}
 }
 
 func (f *LocalizationFile) init(rootDir string, elem configElement) error {
 	f.Category = strings.Join(f.Categories, " ")
-	f.Format = format.Formats[elem.Type]
+	f.Format = format.Formats[elem.Type]()
+	f.Format.init(f.ExtraParams)
 	f.FileLocator = format.FileLocators[elem.Structure]
 
 	var readErr error

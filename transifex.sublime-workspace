@@ -4,12 +4,84 @@
 		"selected_items":
 		[
 			[
-				"map",
-				"mapping"
+				"tmp",
+				"tmpl"
+			],
+			[
+				"transl",
+				"translationKey"
+			],
+			[
+				"templat",
+				"templateFiller"
+			],
+			[
+				"ini",
+				"initialData"
+			],
+			[
+				"trans",
+				"translationKey"
+			],
+			[
+				"init",
+				"initParams"
+			],
+			[
+				"transla",
+				"translationJson"
+			],
+			[
+				"tran",
+				"translationJson"
+			],
+			[
+				"con",
+				"content"
+			],
+			[
+				"tranls",
+				"translations"
 			],
 			[
 				"fil",
 				"filename"
+			],
+			[
+				"Fil",
+				"FileLocators"
+			],
+			[
+				"fo",
+				"format"
+			],
+			[
+				"File",
+				"FileLocator"
+			],
+			[
+				"Ca",
+				"Categories"
+			],
+			[
+				"cate",
+				"Category"
+			],
+			[
+				"Cate",
+				"categories"
+			],
+			[
+				"confi",
+				"configElement"
+			],
+			[
+				"str",
+				"structure"
+			],
+			[
+				"map",
+				"mapping"
 			],
 			[
 				"is",
@@ -56,10 +128,6 @@
 				"translationJson"
 			],
 			[
-				"trans",
-				"translation"
-			],
-			[
 				"tr",
 				"translationFiles"
 			],
@@ -80,20 +148,8 @@
 				"expectedFile"
 			],
 			[
-				"str",
-				"struct"
-			],
-			[
-				"tran",
-				"transifex"
-			],
-			[
 				"L",
 				"localizationFile"
-			],
-			[
-				"con",
-				"contentJson"
 			],
 			[
 				"Error",
@@ -142,10 +198,6 @@
 			[
 				"pro",
 				"projectSlug"
-			],
-			[
-				"transl",
-				"translation"
 			],
 			[
 				"Langa",
@@ -323,6 +375,78 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/transifex/format/format.go",
+			"settings":
+			{
+				"buffer_size": 7383,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/GitHub/geonetwork/core-geonetwork/transifex-localization-files.json",
+			"settings":
+			{
+				"buffer_size": 449,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/transifex/format/format_test.go",
+			"settings":
+			{
+				"buffer_size": 5782,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/testutil/testutil.go",
+			"settings":
+			{
+				"buffer_size": 1894,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/testutil/testutil_test.go",
+			"settings":
+			{
+				"buffer_size": 1689,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/transifex/format/flatten-xml-to-json.go",
+			"settings":
+			{
+				"buffer_size": 4469,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/transifex/format/flatten-xml-to-json_test.go",
+			"settings":
+			{
+				"buffer_size": 5535,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/transifex/config/config.go",
+			"settings":
+			{
+				"buffer_size": 2112,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/transifex/config/config_test.go",
+			"settings":
+			{
+				"buffer_size": 3756,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/User/Go.sublime-build",
 	"command_palette":
@@ -348,11 +472,28 @@
 	},
 	"file_history":
 	[
+		"/E/Downloads/Bezirke_geocat/import.sql",
+		"/E/apache-tomcat-7.0.54/conf/catalina.policy",
+		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/ROOT/WEB-INF/applicationContext-security.xml",
+		"/C/GitHub/mapfish-print/build.gradle",
+		"/C/GitHub/golang-transifex/src/transifex/format/key-value-json.go",
+		"/E/Downloads/test-csw-T-12-02-2014-FINAL-OK (2).txt",
+		"/C/GitHub/golang-transifex/src/upload/upload.go",
+		"/C/GitHub/golang-transifex/src/transifex/config/config_test.go",
+		"/C/GitHub/golang-transifex/src/transifex/config/config.go",
+		"/C/GitHub/golang-transifex/src/transifex/transifex.go",
+		"/C/GitHub/geonetwork/core-geonetwork/web/src/main/webapp/WEB-INF/data/config/schema_plugins/iso19139/loc/eng/strings.xml",
+		"/C/GitHub/golang-transifex/src/download/download.go",
+		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/cas/WEB-INF/security-proxy.properties",
+		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/cas/WEB-INF/cas.properties",
+		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/ROOT/WEB-INF/security-proxy.properties",
+		"/C/GitHub/scala-io/project/Build.",
+		"/C/GitHub/golang-transifex/src/transifex/format/flatten-xml-to-json_test.go",
+		"/C/GitHub/golang-transifex/transifex.sublime-project",
 		"/C/GitHub/georchestra/georchestra/config/defaults/cas-server-webapp/maven.filter",
 		"/C/GitHub/georchestra/georchestra/cas-server-webapp/src/main/filtered-resources/WEB-INF/cas.properties",
 		"/c/GitHub/georchestra/georchestra/cas-server-webapp/deps",
 		"/c/GitHub/georchestra/georchestra/cas-server-webapp/pom.xml",
-		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/cas/WEB-INF/cas.properties",
 		"/C/GitHub/georchestra/georchestra/config/defaults/cas-server-webapp/WEB-INF/classes/log4j.xml",
 		"/C/GitHub/georchestra/georchestra/config/defaults/cas-server-webapp/WEB-INF/classes/log4j.properties",
 		"/E/tmp/cas-web-server.log",
@@ -369,7 +510,6 @@
 		"/C/GitHub/georchestra/georchestra/security-proxy/pom.xml",
 		"/C/GitHub/georchestra/georchestra/cas-server-webapp/pom.xml",
 		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/cas-localhost/index.jsp",
-		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/ROOT/WEB-INF/applicationContext-security.xml",
 		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/cas-localhost/WEB-INF/login-webflow.xml",
 		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/webapps/ROOT/WEB-INF/proxy-servlet.xml",
 		"/E/Downloads/cas-server-4.0.0-release/cas-server-4.0.0/po",
@@ -397,21 +537,15 @@
 		"/E/apache-tomcat-8.0.8/apache-tomcat-8.0.8/bin/startup.bat",
 		"/C/GitHub/geonetwork/core-geonetwork/transifex-localization-files.json",
 		"/C/GitHub/golang-transifex/src/transifex/transifex_test.go",
-		"/C/GitHub/golang-transifex/src/transifex/transifex.go",
 		"/C/GitHub/golang-transifex/src/testutil/testutil.go",
 		"/C/GitHub/golang-transifex/x.go",
-		"/C/GitHub/golang-transifex/src/transifex/format/flatten-xml-to-json_test.go",
-		"/C/GitHub/golang-transifex/src/transifex/format/key-value-json.go",
-		"/C/GitHub/golang-transifex/src/upload/upload.go",
 		"/C/GitHub/golang-transifex/localization-files.json",
 		"/C/GitHub/golang-transifex/README.md",
 		"/C/GitHub/golang-transifex/src/transifex/format/flatten-xml-to-json.go",
 		"/C/GitHub/golang-transifex/src/transifex/format/format_test.go",
-		"/C/GitHub/golang-transifex/src/download/download.go",
 		"/C/GitHub/golang-transifex/src/transifex/format/format.go",
 		"/C/GitHub/golang-transifex/src/transifex/cli/cli.go",
 		"/C/GitHub/mapfish-printV3/gradlew-debug.bat",
-		"/C/GitHub/golang-transifex/src/transifex/config/config.go",
 		"/C/GitHub/golang-transifex/src/tu/tu.go",
 		"/C/GitHub/golang-transifex/src/transifex/format/flatten-xml-to-java-xml-properties_test.go",
 		"/C/GitHub/golang-transifex/src/transifex/format/flatten-xml-to-java-xml-properties.go",
@@ -458,6 +592,23 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"keyXmlData",
+			"{{value}}",
+			"{{key}}",
+			"'n",
+			"en",
+			"\"ml\":",
+			"INSERT INTO IsoLanguages VALUES  \\(\\d\\d\\d,'\\w\\w\\w', NULL\\);\\n",
+			"INSERT INTO IsoLanguages VALUES  (\\d\\d,'dyu', NULL);",
+			"INSERT INTO IsoLanguages VALUES\\s*\\(\\d+,'\\w\\w\\w',\\s*NULL\\);",
+			"INSERT INTO IsoLanguages VALUES\\s*\\(\\d+,'\\w\\w\\w', NULL\\);",
+			"INSERT INTO IsoLanguages VALUES\\s*\\(\\d+,'(\\w\\w\\w)', NULL\\);",
+			"INSERT INTO IsoLanguages VALUES\\s*\\(\\d+,'(\\w\\w\\w)', '(\\w\\w)'\\);",
+			"INSERT INTO IsoLanguages VALUES\\s+(/d+,",
+			"tu.",
+			"filename",
+			"t.",
+			"println",
 			"license",
 			"asm",
 			"spring.version",
@@ -553,6 +704,14 @@
 		"regex": false,
 		"replace_history":
 		[
+			"keyXmlTemplateText",
+			"{{.Value}}",
+			"{{.Key}}",
+			"it",
+			"",
+			"\"$1\":\"$2\",",
+			"",
+			"fname",
 			"cas.version",
 			"twoToThreeLetterIsoCode",
 			"Create",
@@ -581,8 +740,252 @@
 	"groups":
 	[
 		{
+			"selected": 6,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/transifex/format/format.go",
+					"settings":
+					{
+						"buffer_size": 7383,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								468,
+								468
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 168.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/GitHub/geonetwork/core-geonetwork/transifex-localization-files.json",
+					"settings":
+					{
+						"buffer_size": 449,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								246,
+								246
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/transifex/format/format_test.go",
+					"settings":
+					{
+						"buffer_size": 5782,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1050,
+								1050
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 168.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/testutil/testutil.go",
+					"settings":
+					{
+						"buffer_size": 1894,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 504.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/testutil/testutil_test.go",
+					"settings":
+					{
+						"buffer_size": 1689,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/transifex/format/flatten-xml-to-json.go",
+					"settings":
+					{
+						"buffer_size": 4469,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								513,
+								513
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/transifex/format/flatten-xml-to-json_test.go",
+					"settings":
+					{
+						"buffer_size": 5535,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3537,
+								3537
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1276.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/transifex/config/config.go",
+					"settings":
+					{
+						"buffer_size": 2112,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								610,
+								610
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/transifex/config/config_test.go",
+					"settings":
+					{
+						"buffer_size": 3756,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								635,
+								635
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 126.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],

@@ -6,7 +6,7 @@ import (
 	tu "testutil"
 )
 
-func TestReadConfig_LangDir(t *testing.T) {
+func Test_ReadConfig_LangDir(t *testing.T) {
 	configText := `
 [{
 	"type": "FLATTENXMLTOJSON",
@@ -18,6 +18,16 @@ func TestReadConfig_LangDir(t *testing.T) {
       "slug": "iso19139-strings-xml",
       "priority": "0",
       "categories": ["schemaplugin", "iso19139"]
+    },{
+      "dir": "loc",
+      "fname": "string",	
+      "name": "Iso19139 Strings2",
+      "slug": "iso19139-strings2-xml",
+      "priority": "0",
+      "categories": [],
+      "ExtraParams": {
+      	"key": "xpath/to/key"
+      }
     }]
 },{    
     "type": "KEYVALUEJSON",
@@ -31,6 +41,7 @@ func TestReadConfig_LangDir(t *testing.T) {
       "categories": ["Angular_UI"]
     }]
 }]`
+
 	root := tu.CreateFileTree(
 		tu.Dir("xyz",
 			tu.FileAndData("config.json", []byte(configText)),
@@ -50,8 +61,10 @@ func TestReadConfig_LangDir(t *testing.T) {
 		panic(err)
 	}
 
-	if len(files) != 2 {
-		t.Errorf("Expected 2 file: %v", files)
+
+t.Errorf("%v", files)
+	if len(files) != 3 {
+		t.Errorf("Expected 3 file: %v", files)
 	}
 
 	if len(files[0].Translations) != 2 {
@@ -70,24 +83,24 @@ func TestReadConfig_LangDir(t *testing.T) {
 		t.Errorf("Path of fr translation was unexpected: %s", v)
 	}
 
-	if len(files[1].Translations) != 3 {
+	if len(files[2].Translations) != 3 {
 		t.Errorf("Not 3 translations for second translations: %v", files)
 	}
 
-	if v, ok := files[1].Translations["fr"]; !ok {
-		t.Errorf("Expected fr translation: %v", files[1].Translations)
+	if v, ok := files[2].Translations["fr"]; !ok {
+		t.Errorf("Expected fr translation: %v", files[2].Translations)
 	} else if v != filepath.Join(root, "js", "fr-core.json") {
 		t.Errorf("Path of fr translation was unexpected: %s", v)
 	}
 
-	if v, ok := files[1].Translations["en"]; !ok {
-		t.Errorf("Expected en translation: %v", files[1].Translations)
+	if v, ok := files[2].Translations["en"]; !ok {
+		t.Errorf("Expected en translation: %v", files[2].Translations)
 	} else if v != filepath.Join(root, "js", "en-core.json") {
 		t.Errorf("Path of en translation was unexpected: %s", v)
 	}
 
-	if v, ok := files[1].Translations["it"]; !ok {
-		t.Errorf("Expected it translation: %v", files[1].Translations)
+	if v, ok := files[2].Translations["it"]; !ok {
+		t.Errorf("Expected it translation: %v", files[2].Translations)
 	} else if v != filepath.Join(root, "js", "it-core.json") {
 		t.Errorf("Path of it translation was unexpected: %s", v)
 	}
